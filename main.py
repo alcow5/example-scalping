@@ -2,11 +2,10 @@ import alpaca_trade_api as alpaca
 import asyncio
 import pandas as pd
 import sys
-
 import logging
+from cred import base_url, api_key_id, api_secret
 
 logger = logging.getLogger()
-
 
 class ScalpAlgo:
 
@@ -65,7 +64,7 @@ class ScalpAlgo:
         order = self._order
         if (order is not None and
             order.side == 'buy' and now -
-                pd.Timestamp(order.submitted_at, tz='America/New_York') > pd.Timedelta('2 min')):
+                pd.Timestamp.tz_convert(order.submitted_at, 'America/New_York') > pd.Timedelta('2 min')):
             last_price = self._api.polygon.last_trade(self._symbol).price
             self._l.info(
                 f'canceling missed buy order {order.id} at {order.limit_price} '
@@ -202,8 +201,17 @@ class ScalpAlgo:
 
 
 def main(args):
-    api = alpaca.REST()
-    stream = alpaca.StreamConn()
+    print(base_url)
+    api = alpaca.REST(
+    base_url=base_url,
+    key_id=api_key_id,
+    secret_key=api_secret
+    )
+    stream = alpaca.StreamConn(
+    base_url=base_url,
+    key_id=api_key_id,
+    secret_key=api_secret
+    )
 
     fleet = {}
     symbols = args.symbols
