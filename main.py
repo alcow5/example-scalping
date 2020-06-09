@@ -265,6 +265,6 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('symbols', nargs='+')
-    parser.add_argument('--lot', type=float, default=2000)
+    parser.add_argument('--lot', type=float, default=20000)
 
     main(parser.parse_args())
